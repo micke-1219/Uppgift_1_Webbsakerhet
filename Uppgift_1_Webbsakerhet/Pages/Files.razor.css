@@ -1,0 +1,33 @@
+﻿.validation-container {
+    position: relative;
+}
+
+.validation {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    position: absolute;
+}
+
+.file {
+    background-color: #fafafa;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+embed {
+    height: 100%;
+    width: 100%;
+}
+
+.file-info {
+    min-width: max-content;
+}
+
+.button-container {
+    width: 100%;
+}

@@ -1,0 +1,93 @@
+﻿@page "/"
+
+<div class="main-page">
+    <!--BANNER-->
+    <div class="index-banner">
+        <div class="container d-flex justify-content-between px-5">
+            <h1>MyForum</h1>
+            <div>
+                <a href="/files">Files</a>
+            </div>
+        </div>
+    </div>
+
+    <!--CONTAINER-->
+    <div class="container px-5">
+
+        <!--COMMENTS-->
+        <EditForm Model="@comment" OnValidSubmit="SubmitCommentAsync">
+            <DataAnnotationsValidator />
+            <div class="mt-4">
+                <InputText class="name-input p-2" placeholder="Enter your name" @bind-Value="comment.UserName" />
+                <div class="valdation-container">
+                    <div class="validation">
+                        <ValidationMessage For="() => comment.UserName" />
+                    </div>
+                </div>
+                <InputTextArea class="content-input p-2 mt-4" placeholder="Make a comment" @bind-Value="comment.Content" />
+                <div class="validation-container">
+                    <div class="validation">
+                        <ValidationMessage For="() => comment.Content" />
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="primary-button mt-4 mb-4">Post</button>
+        </EditForm>
+
+        @if (comments.Count == 0)
+        {
+            <p>There are no comments</p>
+        }
+        else
+        {
+            @foreach (var comment in comments)
+            {
+                <div class="comment d-flex pt-3 pb-3">
+                    <ion-icon class="pt-1" name="person-circle"></ion-icon>
+                    <div>
+                        <div class="d-flex ps-3">
+                            <p class="bold-text gray-text pe-3">Comment By: @comment.UserName</p>
+                            <p class="bold-text gray-text">Date: @comment.CreateDate</p>
+                        </div>
+                        <p class="pt-2 ps-3">@((MarkupString)comment.Content)</p>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    private CommentModel comment;
+    private List<CommentModel> comments = new List<CommentModel>();
+    private List<string> allowedTags = new List<string>() { "<b>", "</b>", "<del>", "</del>", "<i>", "</i>", "<mark>", "</mark>" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        comment = new CommentModel();
+        await GetCommentsAsync();
+    }
+
+    private async Task SubmitCommentAsync()
+    {
+        comment.CreateDate = DateTime.Now;
+        string encodedComment = HttpUtility.HtmlEncode(comment.Content);
+
+        foreach (var tag in allowedTags)
+        {
+            string encodedTag = HttpUtility.HtmlEncode(tag);
+            encodedComment = encodedComment.Replace(encodedTag, tag);
+        }
+
+        comment.Content = encodedComment;
+        await http.PostAsJsonAsync<CommentModel>("https://localhost:44318/api/Comments", comment);
+        await GetCommentsAsync();
+        comment = new CommentModel();
+    }
+
+    private async Task GetCommentsAsync()
+    {
+        comments = await http.GetFromJsonAsync<List<CommentModel>>("https://localhost:44318/api/Comments");
+        comments.Reverse();
+    }
+}

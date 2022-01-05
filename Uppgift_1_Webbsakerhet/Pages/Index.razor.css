@@ -1,0 +1,30 @@
+﻿.comment {
+    border-bottom: 2px solid lightgray;
+}
+
+    .comment [name="person-circle"] {
+        font-size: 50px;
+        color: gray;
+    }
+
+    .comment .likes {
+        width: min-content;
+    }
+
+    .comment .bold-text {
+        font-size: 14px;
+    }
+
+    .comment p {
+        font-size: 14px;
+    }
+
+.validation-container {
+    position: relative;
+}
+
+.validation {
+    font-size: 12px;
+    margin-top: 5px;
+    position:absolute;
+}

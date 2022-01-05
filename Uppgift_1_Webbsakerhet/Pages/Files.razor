@@ -1,0 +1,143 @@
+﻿@page "/files"
+
+<div class="main-page">
+    <!--BANNER-->
+    <div class="index-banner">
+        <div class="container d-flex justify-content-between px-5">
+            <h1>MyForum</h1>
+            <div>
+                <a href="/">Forum</a>
+            </div>
+        </div>
+    </div>
+
+    <!--CONTAINER-->
+    <div class="container px-5">
+
+        <!--FILES-->
+        <div class="mt-4 mb-4">
+            <form @onsubmit="SubmitFilesAsync">
+                <label class="mb-4">Upload a PDF-file</label>
+                <InputFile class="form-control" OnChange="@HandleSelection"></InputFile>
+                @if (showValidationMessage)
+                {
+                    <div class="validation-container">
+                        <p class="validation">Only PDF-files are supported!</p>
+                    </div>
+                }
+                <button type="submit" class="primary-button mt-4 mb-4">Upload</button>
+            </form>
+        </div>
+
+        @if (uploadedFiles.Count == 0)
+        {
+            <p>There are no uploaded files</p>
+        }
+        else
+        {
+            @foreach (var file in uploadedFiles)
+            {
+                <div class="file d-flex pt-3 pb-3 mb-3">
+                    <div class="file-info me-5">
+                        <p class="gray-text">Upload Date</p>
+                        <p class="gray-text bold-text">@file.UploadDate</p>
+                    </div>
+                    <div class="file-info me-5">
+                        <p class="gray-text">Filetype</p>
+                        <p class="gray-text bold-text">@file.Type</p>
+                    </div>
+                    <div class="file-info">
+                        <p class="gray-text">Filename</p>
+                        <p class="gray-text bold-text">@file.Name</p>
+                    </div>
+                    <div class="button-container d-flex justify-content-end">
+                        <button type="button" class="primary-button jus" data-bs-toggle="modal" data-bs-target="#pdfModal-@file.Id">Open PDF</button>
+                    </div>
+                </div>
+
+                <!--PDF MODAL-->
+                <div class="modal fade" id="pdfModal-@file.Id" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">@file.Name</h5>
+                            </div>
+                            <div class="modal-body" style="height:30rem">
+                                <embed src="@DisplayPDF(file.Id)" type="application/pdf" />
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="primary-button" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    private UploadedFileModel uploadedFile;
+    private List<UploadedFileModel> uploadedFiles = new List<UploadedFileModel>();
+    IReadOnlyList<IBrowserFile> selectedFiles = new List<IBrowserFile>();
+
+    private bool showValidationMessage = false;
+
+    string pdfBase64;
+    string pdfSrc;
+
+    protected override async Task OnInitializedAsync()
+    {
+        uploadedFile = new UploadedFileModel();
+        await GetFilesAsync();
+    }
+
+    private void HandleSelection(InputFileChangeEventArgs eventArgs)
+    {
+        selectedFiles = eventArgs.GetMultipleFiles();
+        showValidationMessage = false;
+        this.StateHasChanged();
+    }
+
+    private async Task SubmitFilesAsync()
+    {
+        foreach (var file in selectedFiles)
+        {
+            if (file.ContentType.Contains("pdf"))
+            {
+                Stream stream = file.OpenReadStream();
+                MemoryStream memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                stream.Close();
+
+                uploadedFile.Name = file.Name;
+                uploadedFile.Type = file.ContentType;
+                uploadedFile.UploadDate = DateTime.Now;
+                uploadedFile.Content = memoryStream.ToArray();
+                memoryStream.Close();
+
+                await http.PostAsJsonAsync<UploadedFileModel>("https://localhost:44318/api/UploadedFiles", uploadedFile);
+                await GetFilesAsync();
+                uploadedFile = new UploadedFileModel();
+            }
+            else
+            {
+                showValidationMessage = true;
+            }
+        }
+    }
+
+    private async Task GetFilesAsync()
+    {
+        uploadedFiles = await http.GetFromJsonAsync<List<UploadedFileModel>>("https://localhost:44318/api/UploadedFiles");
+        uploadedFiles.Reverse();
+    }
+
+    private string DisplayPDF(int id)
+    {
+        var pdf = uploadedFiles.Find(x => x.Id == id);
+        pdfBase64 = Convert.ToBase64String(pdf.Content);
+        pdfSrc = String.Format("data:application/pdf;base64,{0}", pdfBase64);
+        return pdfSrc;
+    }
+}

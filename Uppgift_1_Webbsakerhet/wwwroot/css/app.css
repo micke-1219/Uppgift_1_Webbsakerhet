@@ -1,0 +1,156 @@
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Spartan:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Londrina+Sketch&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Spartan:wght@600&display=swap');
+
+/* font-family: 'Spartan', sans-serif; */
+/* font-family: 'Amatic SC', cursive; */
+/* font-family: 'Londrina Sketch', cursive; */
+/* font-family: 'Satisfy', cursive; */
+
+/* ----------GENERAL---------- */
+
+html, body {
+    font-family: 'Spartan', sans-serif;
+    line-height: 1.15;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5 {
+    margin: 0;
+}
+
+p {
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.gray-text {
+    color: gray;
+}
+
+.bold-text {
+    font-weight: 700;
+}
+
+.main-page {
+    min-height: 100vh;
+}
+
+.valid.modified:not([type="checkbox"]) {
+    outline: none !important;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+/* ----------BANNER---------- */
+
+.index-banner {
+    height: 200px;
+    background-color: #1DA1F2;
+    padding-top: 1rem;
+}
+
+    .index-banner h1 {
+        font-family: 'Satisfy', cursive;
+        font-size: 60px;
+        color: white;
+        white-space: nowrap;
+    }
+
+    .index-banner a {
+        font-weight: 700;
+        text-align: center;
+        color: white;
+        border: 2px solid white;
+        border-radius: 50px;
+        padding: 0.5rem 2.5rem;
+        display: inline-block;
+        width: 10rem;
+        transition: all .4s;
+    }
+
+        .index-banner a:hover {
+            color: #1DA1F2;
+            background-color: white;
+            transition: all .4s;
+        }
+
+/* ----------FORMS---------- */
+
+.name-input {
+    width: 100%;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    outline: none;
+}
+
+.content-input {
+    resize: none;
+    width: 100%;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: lightgray;
+    box-shadow: none;
+}
+
+/* ----------BUTTON---------- */
+
+.primary-button {
+    font-weight: 700;
+    text-align: center;
+    color: white;
+    background-color: #1DA1F2;
+    border: none;
+    border-radius: 50px;
+    padding: 0.5rem 2.5rem;
+    width: 10rem;
+    transition: all .4s;
+}
+
+    .primary-button:hover {
+        background-color: #0055A6;
+        transition: all .4s;
+    }
